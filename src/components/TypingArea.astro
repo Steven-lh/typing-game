@@ -2,14 +2,18 @@
 
 ---
 
-<section class="relative flex flex-col w-full h-full">
-  <span
+<section
+  id="divText"
+  class="relative flex flex-col w-full h-full items-center justify-center"
+>
+  <div
     id="quote-guide"
-    class="flex text-3xl/10 w-full h-[60%] text-white/70 text-center items-center justify-center text-balance"
-  ></span>
+    class="absolute w-full max-w-4xl text-white/30 font-bold text-3xl/12 h-fit text-center whitespace-pre-wrap"
+  >
+  </div>
   <div
     id="quote-write"
-    class="absolute flex text-3xl/10 w-full h-[60%] left-0 text-center items-center justify-center text-balance"
+    class="absolute w-full max-w-4xl text-3xl/12 font-bold text-center whitespace-pre-wrap"
   >
   </div>
 </section>
@@ -20,32 +24,38 @@
       "https://quoteslate.vercel.app/api/quotes/random?minLength=200&maxLength=400"
     );
     const data = await response.json();
-    console.log(data);
     return data;
   }
 
   const responseText = await getQuotes();
 
+  function normalizeText(text) {
+    return text
+      .replace(/\s*\n\s*/g, " ") // ← CLAVE
+      .replace(/[’‘]/g, "'")
+      .replace(/[“”]/g, '"')
+      .replace(/[—–]/g, "-")
+      .normalize("NFKC");
+  }
+
+  const normalizedQuote = normalizeText(responseText.quote);
+
   const quoteGuide = document.getElementById("quote-guide");
   const quoteWrite = document.getElementById("quote-write");
-  if (quoteGuide && quoteWrite) {
-    quoteGuide.textContent = `${responseText.quote}`;
-    quoteWrite.textContent = ``;
+  if (quoteGuide) {
+    quoteGuide.textContent = `${normalizedQuote}`;
   }
 
   const quoteLetters = [];
 
-  quoteLetters.push(responseText.quote);
-
-  const separatedLetters = quoteLetters.map((letters) => {
-    return letters.split("");
-  });
+  quoteLetters.push(normalizeText(responseText.quote));
 
   let currentIndex = 0;
   const specialKeys = [
     "Shift",
     "Control",
     "Alt",
+    "AltGraph",
     "Meta",
     "CapsLock",
     "Tab",
@@ -74,20 +84,30 @@
     "F12",
   ];
 
+  const letters = quoteLetters[0].split("");
+  letters.forEach((letter) => {
+    const text = document.createElement("span");
+    text.textContent = letter;
+
+    text.classList.add("letter", "opacity-30");
+    quoteWrite.appendChild(text);
+  });
+
+  const lettersSpan = document.querySelectorAll("#quote-write .letter");
   document.addEventListener("keydown", (e) => {
-    const text = document.createElement("div");
     if (specialKeys.includes(e.key)) return;
-    if (e.key != null) {
-      separatedLetters.forEach((letter) => {
-        const letterUpdated = letter[currentIndex++];
-        if (letterUpdated === e.key) {
-          text.textContent = `${letterUpdated}`;
-          quoteWrite.appendChild(text);
-        }  else {
-          quoteWrite.textContent = `error`;
-        }
-      });
-      console.log(e.key);
+    if (currentIndex === letters.length) return;
+
+    const expected = letters[currentIndex];
+    const currentSpan = lettersSpan[currentIndex];
+
+    if (e.key === expected) {
+      currentSpan.classList.remove("opacity-30", "underline");
+      currentSpan.classList.add("text-white");
+      currentIndex++;
+    } else {
+      currentSpan.classList.remove("opacity-30");
+      currentSpan.classList.add("text-red-400", "underline");
     }
   });
 </script>
