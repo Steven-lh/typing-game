@@ -1,22 +1,20 @@
----
-
----
-
-<section
-  id="divText"
-  class="relative flex flex-col w-full h-full items-center justify-center"
->
-  <div
-    id="quote-guide"
-    class="absolute w-full max-w-4xl text-white/30 font-bold text-3xl/12 h-fit text-center whitespace-pre-wrap"
-  >
+<div class="flex flex-col w-full h-full items-center py-20 mt-10">
+  <span
+    class="caps-warning border rounded-2xl flex bg-white w-50 h-17 items-center justify-center text-2xl mb-10"
+  ></span>
+  <div class="relative">
+    <div
+      id="quote-guide"
+      class="absolute w-full max-w-4xl font text-[#8B949E]/40 text-3xl/12 h-fit text-center whitespace-pre-wrap tracking-widest"
+    >
+    </div>
+    <div
+      id="quote-write"
+      class="w-full max-w-4xl text-3xl/12 text-center whitespace-pre-wrap tracking-widest"
+    >
+    </div>
   </div>
-  <div
-    id="quote-write"
-    class="absolute w-full max-w-4xl text-3xl/12 font-bold text-center whitespace-pre-wrap"
-  >
-  </div>
-</section>
+</div>
 
 <script type="module">
   async function getQuotes() {
@@ -31,7 +29,7 @@
 
   function normalizeText(text) {
     return text
-      .replace(/\s*\n\s*/g, " ") // ← CLAVE
+      .replace(/\s*\n\s*/g, " ")
       .replace(/[’‘]/g, "'")
       .replace(/[“”]/g, '"')
       .replace(/[—–]/g, "-")
@@ -84,6 +82,18 @@
     "F12",
   ];
 
+  function updateCaps(e) {
+    if (e.getModifierState?.("CapsLock")) {
+      capsWarning.classList.remove("opacity-0");
+    } else {
+      capsWarning.classList.add("opacity-0");
+    }
+  }
+
+  ["keydown", "keyup", "mousedown", "touchstart"].forEach((e) =>
+    document.addEventListener(e, updateCaps)
+  );
+
   const letters = quoteLetters[0].split("");
   letters.forEach((letter) => {
     const text = document.createElement("span");
@@ -94,20 +104,41 @@
   });
 
   const lettersSpan = document.querySelectorAll("#quote-write .letter");
+  const capsWarning = document.querySelector(".caps-warning");
+
+  capsWarning.classList.add(
+    "opacity-0",
+    "transition-opacity",
+    "duration-200",
+    "gap-2"
+  );
+  capsWarning.innerHTML = `<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-lock"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2a5 5 0 0 1 5 5v3a3 3 0 0 1 3 3v6a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-6a3 3 0 0 1 3 -3v-3a5 5 0 0 1 5 -5m0 12a2 2 0 0 0 -1.995 1.85l-.005 .15a2 2 0 1 0 2 -2m0 -10a3 3 0 0 0 -3 3v3h6v-3a3 3 0 0 0 -3 -3" /></svg><span>Caps Lock</span>`;
   document.addEventListener("keydown", (e) => {
-    if (specialKeys.includes(e.key)) return;
+    let key = e.key;
+
+    if (e.getModifierState("CapsLock")) {
+      capsWarning.classList.remove("opacity-0");
+    } else {
+      capsWarning.classList.add("opacity-0");
+    }
+
+    if (key === "Dead") {
+      key = "'";
+    }
+
+    if (specialKeys.includes(key)) return;
     if (currentIndex === letters.length) return;
 
     const expected = letters[currentIndex];
     const currentSpan = lettersSpan[currentIndex];
 
-    if (e.key === expected) {
+    if (key === expected) {
       currentSpan.classList.remove("opacity-30", "underline");
       currentSpan.classList.add("text-white");
       currentIndex++;
     } else {
       currentSpan.classList.remove("opacity-30");
-      currentSpan.classList.add("text-red-400", "underline");
+      currentSpan.classList.add("text-[#F7768E]", "underline");
     }
   });
 </script>

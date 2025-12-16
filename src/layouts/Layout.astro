@@ -12,8 +12,12 @@ const { title = "Astro Basics" } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class="flex flex-col justify-center items-center bg-[#1F1F1F] py-4 px-2">
-    <div class="w-7xl h-screen flex flex-col items-center py-2 px-2 bg-[#1F1F1F] justify-center border rounded-2xl border-gray-600">
+  <body
+    class="flex flex-col justify-center items-center bg-[#1E1E1E] py-4 px-2"
+  >
+    <div
+      class="w-7xl h-screen flex flex-col items-center py-2 px-2 bg-[#1E1E1E] justify-center border rounded-2xl border-[#30363D]"
+    >
       <slot />
     </div>
   </body>
@@ -22,10 +26,25 @@ const { title = "Astro Basics" } = Astro.props;
 <style is:global>
   html,
   body {
-	color: white;
     margin: 0;
     width: 100%;
     height: 100%;
-	font-family: monospace, sans-serif;
+    font-family: "Rubik", monospace;
+  }
+
+  @font-face {
+    font-family: "Rubik";
+    src: url("/fonts/Rubik-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Rubik";
+    src: url("/fonts/Rubik-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
   }
 </style>
