@@ -12,11 +12,9 @@ const { title = "Astro Basics" } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body
-    class="flex flex-col justify-center items-center bg-[#1E1E1E] py-4 px-2"
-  >
+  <body class="flex flex-col justify-center items-center bg-zinc-900 py-4 px-2">
     <div
-      class="w-7xl h-screen flex flex-col items-center py-2 px-2 bg-[#1E1E1E] justify-center border rounded-2xl border-[#30363D]"
+      class="w-350 h-screen flex flex-col items-center py-2 px-2 bg-zinc-800 justify-center border rounded-2xl border-white shadow-lg shadow-black/80"
     >
       <slot />
     </div>
@@ -46,5 +44,16 @@ const { title = "Astro Basics" } = Astro.props;
     font-weight: 700;
     font-style: normal;
     font-display: swap;
+  }
+
+  @keyframes caret {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
   }
 </style>
